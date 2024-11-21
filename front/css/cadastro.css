@@ -1,0 +1,93 @@
+body {
+    background: #111317;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    text-align: center;
+    min-height: 100vh;
+    padding-top: 50px;
+    box-sizing: border-box;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+}
+h1{
+    font-size: 40px;
+}
+
+/* Fieldset */
+/* Centralizar o fieldset corretamente */
+fieldset {
+    border: 2px solid #f9ac54;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 0 auto 20px; /* Garantir que esteja centralizado horizontalmente */
+    background-color: #1c1f24;
+    width: 80vh;
+    max-width: 500px;
+    text-align: left;
+    box-sizing: border-box; /* Inclui padding e border no cálculo de largura */
+}
+
+legend {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 10px;
+}
+
+/* Inputs e Selects */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+select {
+    display: block; /* Garante alinhamento em bloco */
+    width: calc(100% - 20px); /* Espaço uniforme para os inputs */
+    margin: 10px auto; /* Centraliza dentro do fieldset */
+    padding: 10px;
+    border: 1px solid #f9ac54;
+    border-radius: 5px;
+    background-color: #272a30;
+    color: white;
+    font-size: 14px;
+}
+
+input[type="text"]:hover,
+input[type="password"]:hover,
+input[type="email"]:hover,
+input[type="number"]:hover,
+select:hover {
+    background-color: #33363c;
+    border-color: #f79c42;
+}
+
+/* Estilos para botões e links com classe "button" */
+.button {
+    display: inline-block; /* Garante alinhamento similar */
+    padding: 10px 20px;
+    margin: 10px 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: #f9ac54; /* Cor de fundo */
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none; /* Remove o sublinhado dos links */
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #d79447; /* Efeito hover */
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    fieldset {
+        width: 90%; /* Ajuste para telas menores */
+    }
+}

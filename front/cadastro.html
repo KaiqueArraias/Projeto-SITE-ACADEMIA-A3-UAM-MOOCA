@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro</title>
+    <link rel="stylesheet" type="text/css" href="/front/css/cadastro.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+</head>
+<header>
+    <h1>Cadastro</h1>
+</header>
+<hr>
+<form id="cadastro">
+    <fieldset>
+        <legend>Dados Pessoais</legend>
+        <label for="nome">Nome</label>
+        <input type="text" id="nome" name="nome" required><br>
+
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" name="senha" required><br>
+
+        <label for="cpf">CPF</label>
+        <input type="text" id="cpf" name="cpf" maxlength="11" pattern="\d{11}" required
+            placeholder="Apenas números"><br>
+
+        <label for="endereco">Endereço</label>
+        <input type="text" id="endereco" name="endereco" required placeholder="Rua dos Imigrantes ..." required><br>
+
+        <label for="numero">Número</label>
+        <input type="text" id="numero" name="numero" required><br>
+
+        <label for="complemento">Complemento</label>
+        <input type="text" id="complemento" name="complemento"><br>
+
+        <label for="bairro">Bairro</label>
+        <input type="text" id="bairro" name="bairro" required><br>
+
+        <label for="cep">CEP</label>
+        <input type="text" id="cep" name="cep" maxlength="8" pattern="\d{8}" required placeholder="Apenas números"><br>
+
+        <label for="cidade">Cidade</label>
+        <input type="text" id="cidade" name="cidade" required><br>
+
+        <label for="estado">Selecione seu Estado</label>
+        <select name="estado" id="estado">
+            <option value="AC">Acre</option>
+            <option value="AL">Alagoas</option>
+            <option value="AP">Amapá</option>
+            <option value="AM">Amazonas</option>
+            <option value="BA">Bahia</option>
+            <option value="CE">Ceará</option>
+            <option value="DF">Distrito Federal</option>
+            <option value="ES">Espírito Santo</option>
+            <option value="GO">Goiás</option>
+            <option value="MA">Maranhão</option>
+            <option value="MT">Mato Grosso</option>
+            <option value="MS">Mato Grosso do Sul</option>
+            <option value="MG">Minas Gerais</option>
+            <option value="PA">Pará</option>
+            <option value="PB">Paraíba</option>
+            <option value="PR">Paraná</option>
+            <option value="PE">Pernambuco</option>
+            <option value="PI">Piauí</option>
+            <option value="RJ">Rio de Janeiro</option>
+            <option value="RN">Rio Grande do Norte</option>
+            <option value="RS">Rio Grande do Sul</option>
+            <option value="RO">Rondônia</option>
+            <option value="RR">Roraima</option>
+            <option value="SC">Santa Catarina</option>
+            <option value="SP">São Paulo</option>
+            <option value="SE">Sergipe</option>
+            <option value="TO">Tocantins</option>
+        </select>
+    </fieldset>
+
+    <fieldset>
+        <legend>Plano</legend>
+        <label for="plano">Selecione seu Plano</label>
+        <select id="plano" name="plano" required>
+            <option value="1">Básico</option>
+            <option value="2">Plus</option>
+            <option value="3">Black</option>
+        </select>
+    </fieldset>
+
+    <fieldset>
+        <legend>Contato</legend>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email"><br>
+
+        <label for="telefone">Telefone</label>
+        <input type="text" id="telefone" name="telefone" maxlength="11" pattern="\d{11}" required
+            placeholder="Apenas números"><br>
+    </fieldset>
+
+    <a href="index.html" class="button voltar">Voltar</a>
+    <input type="button" name="enviar" class="button" value="Enviar" onclick="enviarCadastro()">
+</form>
+<script src="/front/js/cadastro.js"></script>
+</body>
+
+</html>
