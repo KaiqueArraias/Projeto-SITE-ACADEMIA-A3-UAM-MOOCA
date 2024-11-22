@@ -1,8 +1,17 @@
 const db = require('../models/db');
 
-// Criar cliente com endereço e assinatura
 exports.createCliente = async (req, res) => {
     const { nome, senha, cpf, endereco, numero, complemento, bairro, cep, cidade, estado, email, telefone, plano } = req.body;
+
+    if (!nome || !email || !senha || !cpf || !telefone || !endereco || !numero || !bairro || !cep || !cidade || !estado || !plano) {
+        return res.status(400).json({ message: 'Todos os campos são obrigatórios.' });
+    }
+    
+    // Verificar se o CPF tem 11 dígitos
+    const cpfRegex = /^\d{11}$/;
+    if (!cpfRegex.test(cpf)) {
+        return res.status(400).json({ message: 'CPF inválido. Deve conter 11 dígitos numéricos.' });
+    }
 
     try {
         // Verificar se o CPF já existe
@@ -11,72 +20,79 @@ exports.createCliente = async (req, res) => {
             return res.status(400).json({ message: 'CPF já cadastrado. Use outro CPF ou faça login.' });
         }
 
-        // Inserir estado (ou reutilizar se já existir)
-        const [estadoResult] = await db.query(
-            'INSERT INTO ESTADO (EST_STR_DESC, EST_STR_SIGLA) VALUES (?, ?) ON DUPLICATE KEY UPDATE EST_INT_ID=LAST_INSERT_ID(EST_INT_ID)',
-            [estado, estado]
-        );
-        const estadoId = estadoResult.insertId;
+        // Inserir ou reutilizar estado
+        const [estadoResult] = await db.query('CALL SP_CREATE_ESTADO(?, ?)', [estado, estado]);
+        console.log('Resultado SP_CREATE_ESTADO:', estadoResult); // Para debug
+        if (!estadoResult || !estadoResult[0] || !estadoResult[0][0]) {
+            throw new Error('Erro: SP_CREATE_ESTADO não retornou um valor válido');
+        }
+        const estadoId = estadoResult[0][0].EST_INT_ID;
 
-        // Inserir cidade (ou reutilizar se já existir)
-        const [cidadeResult] = await db.query(
-            'INSERT INTO CIDADE (CID_STR_DESCRICAO, EST_INT_ID) VALUES (?, ?) ON DUPLICATE KEY UPDATE CID_INT_ID=LAST_INSERT_ID(CID_INT_ID)',
-            [cidade, estadoId]
-        );
-        const cidadeId = cidadeResult.insertId;
+        // Inserir cidade
+        const [cidadeResult] = await db.query('CALL SP_CREATE_CIDADE(?, ?)', [cidade, estadoId]);
+        console.log('Resultado SP_CREATE_CIDADE:', cidadeResult); // Para debug
+        if (!cidadeResult || !cidadeResult[0] || !cidadeResult[0][0]) {
+            throw new Error('Erro: SP_CREATE_CIDADE não retornou um valor válido');
+        }
+        const cidadeId = cidadeResult[0][0].CID_INT_ID;
 
         // Inserir endereço
         const [enderecoResult] = await db.query(
-            'INSERT INTO ENDERECO (END_STR_LOGRADOURO, END_STR_NUMERO, END_STR_COMPLEMENTO, END_STR_BAIRRO, END_STR_CEP, CID_INT_ID) VALUES (?, ?, ?, ?, ?, ?)',
+            'CALL SP_CREATE_ENDERECO(?, ?, ?, ?, ?, ?)',
             [endereco, numero, complemento, bairro, cep, cidadeId]
         );
-        const enderecoId = enderecoResult.insertId;
+        console.log('Resultado SP_CREATE_ENDERECO:', enderecoResult); // Para debug
+        if (!enderecoResult || !enderecoResult[0] || !enderecoResult[0][0]) {
+            throw new Error('Erro: SP_CREATE_ENDERECO não retornou um valor válido');
+        }
+        const enderecoId = enderecoResult[0][0].END_INT_ID;
 
         // Inserir cliente
         const [clienteResult] = await db.query(
-            'INSERT INTO CLIENTE (CLI_STR_NOME, CLI_STR_SENHA, CLI_STR_CPF, END_INT_ID, CLI_STR_EMAIL, CLI_STR_TELEFONE) VALUES (?, ?, ?, ?, ?, ?)',
-            [nome, senha, cpf, enderecoId, email, telefone]
+            'CALL SP_CREATE_CLIENTE(?, ?, ?, ?, ?, ?)',
+            [nome, email, senha, cpf, telefone, enderecoId]
         );
-        const clienteId = clienteResult.insertId;
 
-        // Inserir assinatura vinculada ao cliente e plano
-        await db.query(
-            'INSERT INTO ASSINATURA (CLI_INT_ID, PLA_INT_ID, ASS_STR_DATA_INICIO, ASS_STR_STATUS) VALUES (?, ?, NOW(), ?)',
-            [clienteId, plano, 'Ativo']
-        );
+        console.log('Verificação de e-mail existente:', existingCliente);
+
+        console.log('Resultado SP_CREATE_CLIENTE:', clienteResult); // Para debug
+        if (!clienteResult || !clienteResult[0] || !clienteResult[0][0]) {
+            throw new Error('Erro: SP_CREATE_CLIENTE não retornou um valor válido');
+        }
+        const clienteId = clienteResult[0][0].CLI_INT_ID;
+
+        // Inserir assinatura
+        await db.query('CALL SP_CREATE_ASSINATURA(?, ?, NOW(), "ATIVO")', [clienteId, plano]);
 
         res.status(201).json({ message: 'Cliente, endereço e plano cadastrados com sucesso!' });
     } catch (error) {
         console.error('Erro ao cadastrar cliente:', error);
-        res.status(500).json({ message: 'Erro ao cadastrar cliente.' });
+        res.status(500).json({ message: `Erro ao cadastrar cliente: ${error.message}` });
     }
 };
 
-
-
-// Buscar todos os clientes
 exports.getClientes = async (req, res) => {
     try {
-        console.log('Executando query: SELECT * FROM CLIENTE');
-        const [clientes] = await db.query('SELECT * FROM CLIENTE');
-        console.log('Resultado:', clientes);
-        res.status(200).json(clientes);
-    } catch (error) {
-        console.error('Erro ao buscar clientes:', error); // Mostra o erro detalhado no console
+        const [clientes] = await db.query('CALL SP_GET_ALL_CLIENTES()');
+        res.status(200).json(clientes[0]); // Retorna os clientes
+    } catch (err) {
+        console.error('Erro ao buscar clientes:', err);
         res.status(500).json({ message: 'Erro ao buscar clientes.' });
     }
 };
+
+
 
 // Buscar cliente por ID
 exports.getClienteById = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const [cliente] = await db.query('SELECT * FROM CLIENTE WHERE CLI_INT_ID = ?', [id]);
-        if (cliente.length === 0) {
+        const [cliente] = await db.query('CALL SP_GET_CLIENTE_BY_ID(?)', [id]);
+        if (cliente[0].length === 0) {
             return res.status(404).json({ message: 'Cliente não encontrado.' });
         }
-        res.status(200).json(cliente[0]);
+        res.status(200).json(cliente[0][0]);
     } catch (err) {
         console.error('Erro ao buscar cliente:', err);
         res.status(500).json({ message: 'Erro ao buscar cliente.' });
@@ -86,39 +102,64 @@ exports.getClienteById = async (req, res) => {
 // Atualizar cliente
 exports.updateCliente = async (req, res) => {
     const { id } = req.params;
-    const { nome, email, senha, telefone } = req.body;
+    const { nome, email, telefone } = req.body;
 
     try {
-        const [result] = await db.query(
-            'UPDATE CLIENTE SET CLI_STR_NOME = ?, CLI_STR_EMAIL = ?, CLI_STR_SENHA = ?, CLI_STR_TELEFONE = ? WHERE CLI_INT_ID = ?',
-            [nome, email, senha, telefone, id]
-        );
-
+        const [result] = await db.query('CALL SP_UPDATE_CLIENTE(?, ?, ?, ?)', [id, nome, email, telefone]);
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: 'Cliente não encontrado.' });
         }
-
         res.status(200).json({ message: 'Cliente atualizado com sucesso.' });
     } catch (err) {
         console.error('Erro ao atualizar cliente:', err);
         res.status(500).json({ message: 'Erro ao atualizar cliente.' });
     }
 };
-
 // Excluir cliente
 exports.deleteCliente = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const [result] = await db.query('DELETE FROM CLIENTE WHERE CLI_INT_ID = ?', [id]);
-
+        const [result] = await db.query('CALL SP_DELETE_CLIENTE(?)', [id]);
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: 'Cliente não encontrado.' });
         }
-
         res.status(200).json({ message: 'Cliente excluído com sucesso.' });
     } catch (err) {
         console.error('Erro ao excluir cliente:', err);
         res.status(500).json({ message: 'Erro ao excluir cliente.' });
     }
 };
+
+exports.updateEndereco = async (req, res) => {
+    const { enderecoId, logradouro, numero, complemento, bairro, cep, cidadeId } = req.body;
+
+    try {
+        await db.query(
+            'CALL SP_UPDATE_ENDERECO(?, ?, ?, ?, ?, ?, ?)',
+            [enderecoId, logradouro, numero, complemento, bairro, cep, cidadeId]
+        );
+        res.status(200).json({ message: 'Endereço atualizado com sucesso!' });
+    } catch (error) {
+        console.error('Erro ao atualizar endereço:', error);
+        res.status(500).json({ message: 'Erro ao atualizar endereço.' });
+    }
+};
+
+exports.updateAssinatura = async (req, res) => {
+    const { assinaturaId, status, dataFim } = req.body;
+
+    try {
+        await db.query(
+            'CALL SP_UPDATE_ASSINATURA(?, ?, ?)',
+            [assinaturaId, status, dataFim]
+        );
+        res.status(200).json({ message: 'Assinatura atualizada com sucesso!' });
+    } catch (error) {
+        console.error('Erro ao atualizar assinatura:', error);
+        res.status(500).json({ message: 'Erro ao atualizar assinatura.' });
+    }
+};
+
+const clienteController = require('../controllers/clienteController');
+console.log('Controlador carregado:', clienteController);

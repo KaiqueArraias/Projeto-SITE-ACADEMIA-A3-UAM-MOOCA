@@ -1,22 +1,29 @@
 const express = require('express');
 const router = express.Router();
-const clientesController = require('../controllers/clienteController');
+const clienteController = require('../controllers/clienteController');
 
-// Rota para criar cliente
-router.post('/', clientesController.createCliente);
+// Verificar se o controlador está carregado
+console.log('Controlador carregado:', clienteController);
 
-// Rota para listar todos os clientes
-router.get('/', clientesController.getClientes);
+// Criar cliente
+router.post('/', clienteController.createCliente);
 
-// Rota para buscar cliente por ID
-router.get('/:id', clientesController.getClienteById);
+// Buscar todos os clientes
+router.get('/', clienteController.getClientes); // Adicionando a rota para buscar todos os clientes
 
-// Rota para atualizar cliente
-router.put('/:id', clientesController.updateCliente);
+// Buscar cliente por ID
+router.get('/:id', clienteController.getClienteById);
 
-// Rota para deletar cliente
-router.delete('/:id', clientesController.deleteCliente);
+// Atualizar cliente
+router.put('/:id', clienteController.updateCliente);
+
+// Excluir cliente
+router.delete('/:id', clienteController.deleteCliente);
+
+// Atualizar endereço
+router.put('/endereco/:id', clienteController.updateEndereco);
+
+// Atualizar assinatura
+router.put('/assinatura/:id', clienteController.updateAssinatura);
 
 module.exports = router;
-
-

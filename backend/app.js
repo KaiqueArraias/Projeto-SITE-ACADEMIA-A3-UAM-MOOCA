@@ -24,3 +24,15 @@ app.use('/api/assinaturas', assinaturaRoutes);  // Define a rota base para assin
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
+
+// Rota base para testar a API
+app.get('/api', (req, res) => {
+    res.status(200).json({
+        message: "Bem-vindo à API da Academia!",
+        endpoints: {
+            clientes: "/api/clientes",
+            planos: "/api/planos",
+            assinaturas: "/api/assinaturas"
+        }
+    });
+});
