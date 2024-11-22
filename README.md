@@ -43,3 +43,9 @@ Este projeto consiste no desenvolvimento de um sistema de gestão para uma acade
 ### Endereços:
 - Registro de endereço com integração de cidades e estados no banco de dados.
 
+👥 Integrantes do Grupo
+Nome : Kaique Adimilson Natividade Barbosa Arraias
+RA: 12523225186
+
+Nome: Amanda Taynara Dias Cavalcanti
+RA: 12523227169
