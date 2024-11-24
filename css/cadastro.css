@@ -19,10 +19,10 @@ h1{
 
 /* Fieldset */
 fieldset {
-    border: 2px solid #f9ac54;
+    border: 3px solid #f9ac54;
     border-radius: 10px;
     padding: 20px;
-    margin: 0 auto 20px; /* Garantir que esteja centralizado horizontalmente */
+    margin: 0 auto 20px;
     background-color: #1c1f24;
     width: 80vh;
     max-width: 500px;
@@ -43,9 +43,9 @@ input[type="password"],
 input[type="email"],
 input[type="number"],
 select {
-    display: block; /* Garante alinhamento em bloco */
-    width: calc(100% - 20px); /* Espaço uniforme para os inputs */
-    margin: 10px auto; /* Centraliza dentro do fieldset */
+    display: block;
+    width: calc(100% - 20px);
+    margin: 10px auto;
     padding: 10px;
     border: 1px solid #f9ac54;
     border-radius: 5px;
@@ -65,28 +65,28 @@ select:hover {
 
 /* Estilos para botões e links com classe "button" */
 .button {
-    display: inline-block; /* Garante alinhamento similar */
+    display: inline-block;
     padding: 10px 20px;
     margin: 10px 5px;
     border: none;
     border-radius: 5px;
-    background-color: #f9ac54; /* Cor de fundo */
+    background-color: #f9ac54;
     color: white;
     cursor: pointer;
     font-size: 16px;
     font-weight: bold;
     text-align: center;
-    text-decoration: none; /* Remove o sublinhado dos links */
+    text-decoration: none; 
     transition: background-color 0.3s ease;
 }
 
 .button:hover {
-    background-color: #d79447; /* Efeito hover */
+    background-color: #d79447;
 }
 
 /* Responsividade */
 @media (max-width: 768px) {
     fieldset {
-        width: 90%; /* Ajuste para telas menores */
+        width: 90%;
     }
 }
