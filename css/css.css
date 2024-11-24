@@ -57,7 +57,7 @@ header {
 #menu-horizontal ul {
     list-style: none;
     display: flex;
-    margin-left: -20vh;
+    margin-left: -15vh;
     font-size: 18px;
 }
 
@@ -80,6 +80,7 @@ header {
 }
 
 #join_now {
+    width: 9%;
     font-size: 15px;
     background-color: #f9ac54;
     color: white;
@@ -235,7 +236,6 @@ header {
     box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.2);
     border: 1px solid #4affff;
     transform: scale(1.05);
-    /* Aumenta o card ao passar o mouse */
 }
 
 @media (max-width: 768px) {
@@ -252,7 +252,6 @@ header {
     width: 48px;
     height: 48px;
     object-fit: contain;
-    /* Garante que a imagem se ajuste sem distorção */
     background-color: #F9AC54;
     padding: 5px;
     border-radius: 5px;

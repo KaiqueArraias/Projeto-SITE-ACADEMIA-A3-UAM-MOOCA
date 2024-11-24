@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #111317;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+        }
+
+        .logo {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 150px;
+            height: auto;
+        }
+
+        .login-container {
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            box-sizing: border-box;
+            border: 2px solid #f9ac54;
+            border-radius: 10px;
+            background-color: #1c1f24;
+            width: 80vh;
+            max-width: 500px;
+        }
+
+        .login-header h1 {
+            font-size: 30px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .login-form h2 {
+            font-size: 20px;
+            color: #d79447;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .input-group input {
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            width: calc(100% - 20px);
+            margin: 10px auto;
+        }
+
+        .options {
+            margin: 10px 0;
+        }
+
+        .forgot-password {
+            font-size: 14px;
+            color: #d79447;
+            text-decoration: none;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .button {
+            display: block;
+            margin: 20px auto;
+            width: 80%;
+            padding: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background-color: #d79447;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .button:hover {
+            background-color: #bf7c3e;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="index.html">
+        <img src="img/logo_ka.PNG" alt="Logo KA-FITNESS" class="logo">
+    </a>
+    <div class="login-container">
+        <header class="login-header">
+            <h1>Login</h1>
+        </header>
+        <form class="login-form">
+            <h2>Bem-vindo ao KA-FITNEES</h2>
+            <div class="input-group">
+                <label for="username">Usuário</label>
+                <input type="text" id="username" name="username" placeholder="Digite seu usuário" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" name="password" placeholder="Digite sua senha" required>
+            </div>
+            <div class="options">
+                <a href="#" class="forgot-password">Esqueci minha senha</a><br>
+                <a href="cadastro.html" class="forgot-password">Não tem conta? Cadastre-se</a>
+            </div>
+            <button type="submit" class="button">Entrar</button>
+        </form>
+        <div class="button-back">
+            <a href="index.html" role="button" class="button">Voltar para a página inicial</a>
+        </div>
+    </div>
+</body>
+
+</html>
