@@ -1,5 +1,29 @@
 const db = require('../models/db');
 
+// Função para validar CPF
+function validarCPF(cpf) {
+    cpf = cpf.replace(/\D/g, ''); // Remove caracteres não numéricos
+
+    if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+
+    let soma = 0;
+    for (let i = 0; i < 9; i++) {
+        soma += parseInt(cpf.charAt(i)) * (10 - i);
+    }
+    let resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpf.charAt(9))) return false;
+
+    soma = 0;
+    for (let i = 0; i < 10; i++) {
+        soma += parseInt(cpf.charAt(i)) * (11 - i);
+    }
+    resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    return resto === parseInt(cpf.charAt(10));
+}
+
+// Criar cliente
 exports.createCliente = async (req, res) => {
     const { nome, senha, cpf, endereco, numero, complemento, bairro, cep, cidade, estado, email, telefone, plano } = req.body;
 
@@ -7,70 +31,80 @@ exports.createCliente = async (req, res) => {
         return res.status(400).json({ message: 'Todos os campos são obrigatórios.' });
     }
     
-    // Verificar se o CPF tem 11 dígitos
+    // Validação do CPF
     const cpfRegex = /^\d{11}$/;
     if (!cpfRegex.test(cpf)) {
         return res.status(400).json({ message: 'CPF inválido. Deve conter 11 dígitos numéricos.' });
     }
 
+    const connection = await db.getConnection(); // Iniciar conexão para transação
+
     try {
-        // Verificar se o CPF já existe
-        const [existingCliente] = await db.query('SELECT CLI_STR_CPF FROM CLIENTE WHERE CLI_STR_CPF = ?', [cpf]);
-        if (existingCliente.length > 0) {
+        await connection.beginTransaction(); // Iniciar transação
+
+        // Validação de duplicação (CPF e E-mail)
+        const [existingCpf] = await connection.query('SELECT CLI_STR_CPF FROM CLIENTE WHERE CLI_STR_CPF = ?', [cpf]);
+        if (existingCpf.length > 0) {
+            await connection.rollback();
             return res.status(400).json({ message: 'CPF já cadastrado. Use outro CPF ou faça login.' });
         }
 
-        // Inserir ou reutilizar estado
-        const [estadoResult] = await db.query('CALL SP_CREATE_ESTADO(?, ?)', [estado, estado]);
-        console.log('Resultado SP_CREATE_ESTADO:', estadoResult); // Para debug
-        if (!estadoResult || !estadoResult[0] || !estadoResult[0][0]) {
-            throw new Error('Erro: SP_CREATE_ESTADO não retornou um valor válido');
+        const [existingEmail] = await connection.query('SELECT CLI_STR_EMAIL FROM CLIENTE WHERE CLI_STR_EMAIL = ?', [email]);
+        if (existingEmail.length > 0) {
+            await connection.rollback();
+            return res.status(400).json({ message: 'E-mail já cadastrado. Use outro e-mail ou faça login.' });
         }
+
+        // Inserção no banco: Estado
+        const [estadoResult] = await connection.query('CALL SP_CREATE_ESTADO(?, ?)', [estado, estado]);
         const estadoId = estadoResult[0][0].EST_INT_ID;
 
-        // Inserir cidade
-        const [cidadeResult] = await db.query('CALL SP_CREATE_CIDADE(?, ?)', [cidade, estadoId]);
-        console.log('Resultado SP_CREATE_CIDADE:', cidadeResult); // Para debug
-        if (!cidadeResult || !cidadeResult[0] || !cidadeResult[0][0]) {
-            throw new Error('Erro: SP_CREATE_CIDADE não retornou um valor válido');
-        }
+        // Inserção no banco: Cidade
+        const [cidadeResult] = await connection.query('CALL SP_CREATE_CIDADE(?, ?)', [cidade, estadoId]);
         const cidadeId = cidadeResult[0][0].CID_INT_ID;
 
-        // Inserir endereço
-        const [enderecoResult] = await db.query(
+        // Inserção no banco: Endereço
+        const [enderecoResult] = await connection.query(
             'CALL SP_CREATE_ENDERECO(?, ?, ?, ?, ?, ?)',
             [endereco, numero, complemento, bairro, cep, cidadeId]
         );
-        console.log('Resultado SP_CREATE_ENDERECO:', enderecoResult); // Para debug
-        if (!enderecoResult || !enderecoResult[0] || !enderecoResult[0][0]) {
-            throw new Error('Erro: SP_CREATE_ENDERECO não retornou um valor válido');
-        }
         const enderecoId = enderecoResult[0][0].END_INT_ID;
 
-        // Inserir cliente
-        const [clienteResult] = await db.query(
+        // Inserção no banco: Cliente
+        const [clienteResult] = await connection.query(
             'CALL SP_CREATE_CLIENTE(?, ?, ?, ?, ?, ?)',
             [nome, email, senha, cpf, telefone, enderecoId]
         );
-
-        console.log('Verificação de e-mail existente:', existingCliente);
-
-        console.log('Resultado SP_CREATE_CLIENTE:', clienteResult); // Para debug
-        if (!clienteResult || !clienteResult[0] || !clienteResult[0][0]) {
-            throw new Error('Erro: SP_CREATE_CLIENTE não retornou um valor válido');
-        }
         const clienteId = clienteResult[0][0].CLI_INT_ID;
 
-        // Inserir assinatura
-        await db.query('CALL SP_CREATE_ASSINATURA(?, ?, NOW(), "ATIVO")', [clienteId, plano]);
+        // Inserção no banco: Assinatura
+        await connection.query('CALL SP_CREATE_ASSINATURA(?, ?, NOW(), "ATIVO")', [clienteId, plano]);
 
+        await connection.commit(); // Confirmar transação
         res.status(201).json({ message: 'Cliente, endereço e plano cadastrados com sucesso!' });
     } catch (error) {
+        await connection.rollback(); // Reverter mudanças em caso de erro
+
+        // Tratamento de erros duplicados
+        if (error.code === 'ER_DUP_ENTRY') {
+            if (error.sqlMessage.includes('CLI_STR_CPF')) {
+                return res.status(400).json({ message: 'CPF já cadastrado. Use outro CPF ou faça login.' });
+            }
+            if (error.sqlMessage.includes('CLI_STR_EMAIL')) {
+                return res.status(400).json({ message: 'E-mail já cadastrado. Use outro e-mail ou faça login.' });
+            }
+        }
+
         console.error('Erro ao cadastrar cliente:', error);
         res.status(500).json({ message: `Erro ao cadastrar cliente: ${error.message}` });
+    } finally {
+        connection.release(); // Liberar conexão
     }
 };
 
+
+
+// Buscar todos os clientes
 exports.getClientes = async (req, res) => {
     try {
         const [clientes] = await db.query('CALL SP_GET_ALL_CLIENTES()');
@@ -80,8 +114,6 @@ exports.getClientes = async (req, res) => {
         res.status(500).json({ message: 'Erro ao buscar clientes.' });
     }
 };
-
-
 
 // Buscar cliente por ID
 exports.getClienteById = async (req, res) => {
