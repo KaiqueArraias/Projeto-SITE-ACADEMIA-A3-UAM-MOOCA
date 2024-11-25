@@ -36,7 +36,7 @@ header {
 
 .logo {
     margin-left: -55px;
-    width: 50vh;
+    width: 45vh;
     height: auto;
     transition: transform 0.3s ease;
     transform-origin: center;
