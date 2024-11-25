@@ -101,6 +101,65 @@ header {
     transform: scale(1.10);
 }
 
+@media (max-width: 1120px) {
+    #menu-horizontal {
+        align-items: center;
+    }
+
+    #menu-horizontal ul {
+        flex-direction: column; /* Alinha itens verticalmente */
+        margin-left: 0; /* Remove margem lateral */
+        text-align: center; /* Centraliza o texto */
+    }
+
+    #menu-horizontal ul li {
+        margin: 0.5em 0; /* Adiciona espaçamento entre os itens */
+    }
+
+    #join_now {
+        width: auto; /* Botão ocupa o tamanho do texto */
+        margin-top: 1em; /* Espaçamento acima do botão */
+    }
+}
+
+@media (max-width: 768px) {
+    #menu-horizontal {
+        flex-direction: column; /* Menu em coluna */
+        align-items: center;
+    }
+
+    #menu-horizontal ul {
+        flex-direction: column; /* Alinha itens verticalmente */
+        margin-left: 0; /* Remove margem lateral */
+        text-align: center; /* Centraliza o texto */
+    }
+
+    #menu-horizontal ul li {
+        margin: 0.5em 0; /* Adiciona espaçamento entre os itens */
+    }
+
+    #join_now {
+        width: auto; /* Botão ocupa o tamanho do texto */
+        margin-top: 1em; /* Espaçamento acima do botão */
+    }
+}
+
+/* Para telas menores que 420px (smartphones pequenos) */
+@media (max-width: 420px) {
+    .logo {
+        width: 40vh; /* Reduz o tamanho da logo */
+    }
+
+    #menu-horizontal ul {
+        font-size: 16px; /* Diminui o tamanho da fonte */
+    }
+
+    #join_now {
+        font-size: 14px; /* Diminui o tamanho do texto no botão */
+        padding: 0.4em 0.8em; /* Ajusta o espaçamento interno */
+    }
+}
+
 /* Conteúdo Principal */
 .container_front {
     text-align: left;
@@ -248,6 +307,7 @@ header {
     }
 }
 
+
 .icon img {
     width: 48px;
     height: 48px;
@@ -276,6 +336,7 @@ header {
     align-items: center;
     padding: 60px 20px;
     color: white;
+    flex-direction: column;
 }
 
 .class-conteudo {
@@ -285,6 +346,7 @@ header {
     position: relative;
     height: 500px;
     margin-bottom: 35vh;
+    flex-wrap: wrap;
 }
 
 .imagem {
@@ -341,6 +403,155 @@ header {
     background-color: #4affff;
 }
 
+/* Responsividade */
+
+@media (max-width: 1300px) {
+    .class-conteudo {
+        flex-direction: column;
+        height: auto;
+        margin-bottom: 20px;
+    }
+
+    .imagem .back {
+        position: absolute;
+        width: 50%;
+        left: 400px;
+        top: 0;
+        z-index: 1;
+    }
+    .imagem .front {
+        position: absolute;
+        width: 40%;
+        left: 280px;
+        top: 300px;
+        z-index: 2;
+    }
+
+    .class-text {
+        padding: 20px;
+        margin-top: 320px;
+        text-align: center;
+        margin-top: 580px;
+    }
+}
+
+@media (max-width: 768px) {
+    .class-text {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .imagem .back {
+        position: absolute;
+        width: 50%;
+        left: 220px;
+        top: 0;
+        z-index: 1;
+    }
+    .imagem .front {
+        position: absolute;
+        width: 30%;
+        left: 180px;
+        top: 180px;
+        z-index: 2;
+    }
+
+    .class-book-a-class {
+        flex-direction: column;
+    }
+
+    .book-class {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .class-conteudo {
+        flex-direction: column;
+        height: auto;
+        margin-bottom: 20px;
+    }
+
+    .imagem .back {
+        position: absolute;
+        width: 50%;
+        left: 220px;
+        top: 0;
+        z-index: 1;
+    }
+    .imagem .front {
+        position: absolute;
+        width: 30%;
+        left: 180px;
+        top: 180px;
+        z-index: 2;
+    }
+
+    .class-text {
+        padding: 20px;
+        margin-top: 320px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .class-text {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .imagem .back {
+        position: absolute;
+        width: 50%;
+        left: 220px;
+        top: 0;
+        z-index: 1;
+    }
+    .imagem .front {
+        position: absolute;
+        width: 30%;
+        left: 180px;
+        top: 180px;
+        z-index: 2;
+    }
+
+    .class-book-a-class {
+        flex-direction: column;
+    }
+
+    .book-class {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .imagem .back {
+        position: absolute;
+        width: 70%;
+        left: 75px;
+        top: 0;
+        z-index: 1;
+    }
+    .imagem .front {
+        position: absolute;
+        width: 40%;
+        left: 140px;
+        top: 180px;
+        z-index: 2;
+    }
+    .class-text {
+        font-size: 12px;
+        padding: 10px;
+    }
+
+    .book-class {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+}
+
 /* sessão why */
 
 .why-conteudo {
@@ -388,8 +599,8 @@ header {
 }
 
 .benefits {
-    position: absolute;
-    bottom: -150px;
+    position: relative;
+    bottom: 100px;
     left: 50%;
     transform: translateX(-50%);
     /*translateX(-50%) funciona para garantir que o centro da div.benefits esteja alinhado com o centro do contêiner*/
@@ -401,6 +612,7 @@ header {
     border-radius: 10px;
     box-shadow: 0px 10px 8px rgba(0, 0, 0, 0.2);
     z-index: 2;
+    width: 800px;
 
 }
 
