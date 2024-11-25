@@ -35,6 +35,7 @@ header {
 }
 
 .logo {
+    margin-left: -50px;
     width: 50vh;
     height: auto;
     transition: transform 0.3s ease;
