@@ -1,0 +1,98 @@
+/* Estilo global */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #111317;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+/* Estilo da logo */
+.logo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 250px;
+    height: auto;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.1);
+}
+
+/* Estilo do card */
+#infoCliente {
+    background-color: #1c1f26;
+    padding: 2em;
+    border-radius: 10px;
+    border: 2px solid #f9ac54;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+#infoCliente h2 {
+    margin-bottom: 1em;
+}
+
+#infoCliente p {
+    margin: 0.5em 0;
+    font-size: 16px;
+}
+
+#editarInfo {
+    margin-top: 1.5em;
+    padding: 10px 20px;
+    background-color: #f9ac54;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#editarInfo:hover {
+    background-color: #4affff;
+    transform: scale(1.1);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    #infoCliente {
+        padding: 1.5em;
+    }
+
+    #infoCliente h2 {
+        font-size: 20px;
+    }
+
+    #infoCliente p {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 420px) {
+    #infoCliente {
+        padding: 1em;
+    }
+
+    #infoCliente h2 {
+        font-size: 18px;
+    }
+
+    #infoCliente p {
+        font-size: 12px;
+    }
+
+    .logo {
+        width: 100px;
+    }
+}

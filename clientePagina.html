@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil</title>
+    <link rel="stylesheet" type="text/css" href="css/clientePagina.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+    <img src="img/logo_ka.PNG" alt="Logo" class="logo" onclick="window.location.href='index.html'" />
+    
+    <h1>Bem-vindo(a) <br> <span id="nomeClienteHeader"></span></h1>
+
+    
+    <div id="infoCliente">
+        <h2>Informações Pessoais</h2>
+        <p><strong>Nome:</strong> <span id="nomeClienteP"></span></p>
+        <p><strong>E-mail:</strong> <span id="emailCliente"></span></p>
+        <p><strong>Endereço:</strong>
+            <span id="logradouroCliente"></span>,
+            <span id="numeroCliente"></span>,
+            <span id="complementoCliente"></span>,
+            <span id="bairroCliente"></span>,
+            <span id="cepCliente"></span>,
+            <span id="cidadeCliente"></span> -
+            <span id="estadoCliente"></span>
+        </p><br>
+
+        <p><strong>Plano:</strong> <span id="planoCliente"></span></p><br>
+
+        <button id="editarInfo">Editar Informações</button>
+    </div>
+<script src="js/clientePagina.js"></script>
+</body>

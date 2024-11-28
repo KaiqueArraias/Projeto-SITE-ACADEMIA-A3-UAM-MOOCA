@@ -107,10 +107,10 @@ exports.createCliente = async (req, res) => {
 // Buscar todos os clientes
 exports.getClientes = async (req, res) => {
     try {
-        const [clientes] = await db.query('CALL SP_GET_ALL_CLIENTES()');
-        res.status(200).json(clientes[0]); // Retorna os clientes
-    } catch (err) {
-        console.error('Erro ao buscar clientes:', err);
+        const [clientes] = await db.query('SELECT * FROM CLIENTE');
+        res.status(200).json(clientes);
+    } catch (error) {
+        console.error('Erro ao buscar clientes:', error);
         res.status(500).json({ message: 'Erro ao buscar clientes.' });
     }
 };
@@ -118,29 +118,54 @@ exports.getClientes = async (req, res) => {
 // Buscar cliente por ID
 exports.getClienteById = async (req, res) => {
     const { id } = req.params;
+    console.log('Buscando cliente com ID:', req.params.id);
+
 
     try {
-        const [cliente] = await db.query('CALL SP_GET_CLIENTE_BY_ID(?)', [id]);
-        if (cliente[0].length === 0) {
+        const [result] = await db.query(`
+            SELECT
+                CLI_STR_NOME,
+                CLI_STR_EMAIL,
+                (SELECT PLA_STR_NOME FROM PLANO WHERE PLA_INT_ID = ASSINATURA.PLA_INT_ID) AS plano,
+                END_STR_LOGRADOURO,
+                END_STR_NUMERO,
+                END_STR_COMPLEMENTO,
+                END_STR_BAIRRO,
+                END_STR_CEP,
+                (SELECT CID_STR_DESCRICAO FROM CIDADE WHERE CIDADE.CID_INT_ID = ENDERECO.CID_INT_ID) AS cidade
+            FROM CLIENTE
+            LEFT JOIN ASSINATURA ON CLIENTE.CLI_INT_ID = ASSINATURA.CLI_INT_ID
+            LEFT JOIN ENDERECO ON CLIENTE.END_INT_ID = ENDERECO.END_INT_ID
+            WHERE CLIENTE.CLI_INT_ID = ?
+        `, [id]);
+
+        if (!result || result.length === 0) {
             return res.status(404).json({ message: 'Cliente não encontrado.' });
         }
-        res.status(200).json(cliente[0][0]);
-    } catch (err) {
-        console.error('Erro ao buscar cliente:', err);
-        res.status(500).json({ message: 'Erro ao buscar cliente.' });
+
+        res.json(result[0]);
+    } catch (error) {
+        console.error('Erro ao buscar cliente:', error);
+        res.status(500).json({ message: 'Erro interno do servidor.' });
     }
 };
+
 
 // Atualizar cliente
 exports.updateCliente = async (req, res) => {
     const { id } = req.params;
     const { nome, email, telefone } = req.body;
 
+    console.log('Buscando cliente com ID:', id);
+
     try {
         const [result] = await db.query('CALL SP_UPDATE_CLIENTE(?, ?, ?, ?)', [id, nome, email, telefone]);
+
         if (result.affectedRows === 0) {
+            console.warn('Cliente não encontrado:', id);
             return res.status(404).json({ message: 'Cliente não encontrado.' });
         }
+
         res.status(200).json({ message: 'Cliente atualizado com sucesso.' });
     } catch (err) {
         console.error('Erro ao atualizar cliente:', err);
@@ -195,3 +220,26 @@ exports.updateAssinatura = async (req, res) => {
 
 const clienteController = require('../controllers/clienteController');
 console.log('Controlador carregado:', clienteController);
+
+//Rota login cliente
+
+exports.loginCliente = async (req, res) => {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({ message: 'E-mail e senha são obrigatórios.' });
+    }
+
+    try {
+        const [cliente] = await db.query('SELECT * FROM CLIENTE WHERE CLI_STR_EMAIL = ? AND CLI_STR_SENHA = ?', [username, password]);
+
+        if (cliente.length === 0) {
+            return res.status(401).json({ message: 'Credenciais inválidas.' });
+        }
+
+        res.status(200).json({ id: cliente[0].CLI_INT_ID, nome: cliente[0].CLI_STR_NOME });
+    } catch (error) {
+        console.error('Erro ao fazer login:', error);
+        res.status(500).json({ message: 'Erro ao autenticar cliente.' });
+    }
+};

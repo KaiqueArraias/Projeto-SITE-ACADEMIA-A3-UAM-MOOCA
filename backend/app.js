@@ -2,7 +2,7 @@ require('dotenv').config(); // Configurações do ambiente
 
 const express = require('express');
 const cors = require('cors');
-
+const authRoutes = require('./routes/authRoutes');       // Rotas de autenticação
 const clientesRoutes = require('./routes/clienteRoutes'); // Caminho correto para as rotas de clientes
 const planosRoutes = require('./routes/planos');          // Caminho correto para as rotas de planos
 const assinaturaRoutes = require('./routes/assinatura');  // Caminho correto para as rotas de assinaturas
@@ -16,9 +16,10 @@ app.use(cors());
 app.use(express.json());
 
 // Rotas
-app.use('/api/clientes', clientesRoutes);       // Define a rota base para clientes
-app.use('/api/planos', planosRoutes);           // Define a rota base para planos
-app.use('/api/assinaturas', assinaturaRoutes);  // Define a rota base para assinaturas
+app.use('/api', authRoutes);                // Rotas de autenticação
+app.use('/api/clientes', clientesRoutes);   // Define a rota base para clientes
+app.use('/api/planos', planosRoutes);       // Define a rota base para planos
+app.use('/api/assinaturas', assinaturaRoutes); // Define a rota base para assinaturas
 
 // Iniciar o servidor
 app.listen(port, () => {
@@ -32,7 +33,8 @@ app.get('/api', (req, res) => {
         endpoints: {
             clientes: "/api/clientes",
             planos: "/api/planos",
-            assinaturas: "/api/assinaturas"
+            assinaturas: "/api/assinaturas",
+            login: "/api/login"
         }
     });
 });

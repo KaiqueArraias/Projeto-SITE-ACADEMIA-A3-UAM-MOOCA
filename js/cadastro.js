@@ -46,6 +46,7 @@ async function enviarCadastro(dados) {
 
         if (response.ok) {
             alert('Cadastro realizado com sucesso!');
+            window.location.href = '../login.html';
         } else {
             const erro = await response.json();
             alert(`Erro no cadastro: ${erro.message}`);

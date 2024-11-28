@@ -1,29 +1,37 @@
 const express = require('express');
 const router = express.Router();
 const clienteController = require('../controllers/clienteController');
+const authController = require('../controllers/authController');
+const authMiddleware = require('../middleware/auth');
 
-// Verificar se o controlador está carregado
-console.log('Controlador carregado:', clienteController);
+// Logs para depuração
+console.log('Cliente Controller:', clienteController);
+console.log('Auth Controller:', authController);
+console.log('Auth Middleware:', authMiddleware);
 
-// Criar cliente
+// Rota de login
+router.post('/login', authController.login);
+
+//Rota Criar Cliente
+
 router.post('/', clienteController.createCliente);
 
-// Buscar todos os clientes
-router.get('/', clienteController.getClientes); // Adicionando a rota para buscar todos os clientes
+// Rota protegida para buscar informações do cliente
+router.get('/info/:id', authMiddleware, clienteController.getClienteById);
 
-// Buscar cliente por ID
-router.get('/:id', clienteController.getClienteById);
+// Buscar todos os clientes
+router.get('/', clienteController.getClientes);
 
 // Atualizar cliente
-router.put('/:id', clienteController.updateCliente);
+router.put('/:id', authMiddleware, clienteController.updateCliente);
 
 // Excluir cliente
-router.delete('/:id', clienteController.deleteCliente);
+router.delete('/:id', authMiddleware, clienteController.deleteCliente);
 
 // Atualizar endereço
-router.put('/endereco/:id', clienteController.updateEndereco);
+router.put('/endereco/:id', authMiddleware, clienteController.updateEndereco);
 
 // Atualizar assinatura
-router.put('/assinatura/:id', clienteController.updateAssinatura);
+router.put('/cliente/assinatura/:id', authMiddleware, clienteController.updateAssinatura);
 
 module.exports = router;
