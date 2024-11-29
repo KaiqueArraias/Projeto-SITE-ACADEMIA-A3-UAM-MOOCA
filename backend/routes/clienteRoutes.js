@@ -25,7 +25,6 @@ router.get('/', clienteController.getClientes);
 // Atualizar cliente
 router.put('/:clienteId/endereco/:enderecoId', authMiddleware, clienteController.updateClienteEEndereco);
 
-
 // Excluir cliente
 router.delete('/:id', authMiddleware, clienteController.deleteCliente);
 

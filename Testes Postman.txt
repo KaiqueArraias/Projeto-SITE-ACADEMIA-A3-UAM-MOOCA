@@ -1,0 +1,20 @@
+Criar Cliente
+-POST
+http://localhost:3000/api/clientes
+(Não precisa estar autenticado)
+
+{
+    "nome": "Teste Post",
+    "email": "testepost@gmail.com",
+    "senha": "123456",
+    "cpf": "43337187838",
+    "telefone": "11981325879",
+    "endereco": "Rua vilela",
+    "numero": "554",
+    "complemento": "ap 2",
+    "bairro": "Carrão",
+    "cep": "03920147",
+    "cidade": "São Paulo",
+    "estado": "SP",
+    "plano": 3
+}
