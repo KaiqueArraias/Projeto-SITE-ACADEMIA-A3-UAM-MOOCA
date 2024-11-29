@@ -96,3 +96,84 @@ body {
         width: 100px;
     }
 }
+
+/* Modal */
+.modal {
+    display: none; /* Oculto por padrão */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Fundo semi-transparente */
+    backdrop-filter: blur(5px);
+    justify-content: center;
+    align-items: center;
+}
+
+/* Conteúdo do Modal */
+.modal-content {
+    background-color: #1c1f26;
+    border-radius: 10px;
+    border: 3px solid #f9ac54;
+    padding: 20px;
+    width: 50%;
+    max-width: 400px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease-in-out;
+}
+.modal h2 {
+    color: #f9ac54;
+}
+
+input[type=text],
+input[type=email],
+select{
+    width: calc(100% - 20px);
+    margin: 3px auto;
+    padding: 8px;
+    border: 1px solid #4affff;
+    border-radius: 5px;
+    background-color: #272a30;
+    color: white;
+    font-size: 10px;
+}
+
+/* Botão de Fechar */
+.close-btn {
+    color: #f9ac54;
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#saveButton {
+    margin-top: 1.5em;
+    padding: 10px 20px;
+    background-color: #f9ac54;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#saveButton:hover {
+    background-color: #4affff;
+    transform: scale(1.1);
+}
+
+/* Animação */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

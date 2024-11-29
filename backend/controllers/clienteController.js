@@ -30,7 +30,7 @@ exports.createCliente = async (req, res) => {
     if (!nome || !email || !senha || !cpf || !telefone || !endereco || !numero || !bairro || !cep || !cidade || !estado || !plano) {
         return res.status(400).json({ message: 'Todos os campos são obrigatórios.' });
     }
-    
+
     // Validação do CPF
     const cpfRegex = /^\d{11}$/;
     if (!cpfRegex.test(cpf)) {
@@ -118,60 +118,67 @@ exports.getClientes = async (req, res) => {
 // Buscar cliente por ID
 exports.getClienteById = async (req, res) => {
     const { id } = req.params;
-    console.log('Buscando cliente com ID:', req.params.id);
-
 
     try {
-        const [result] = await db.query(`
-            SELECT
-                CLI_STR_NOME,
-                CLI_STR_EMAIL,
-                (SELECT PLA_STR_NOME FROM PLANO WHERE PLA_INT_ID = ASSINATURA.PLA_INT_ID) AS plano,
-                END_STR_LOGRADOURO,
-                END_STR_NUMERO,
-                END_STR_COMPLEMENTO,
-                END_STR_BAIRRO,
-                END_STR_CEP,
-                (SELECT CID_STR_DESCRICAO FROM CIDADE WHERE CIDADE.CID_INT_ID = ENDERECO.CID_INT_ID) AS cidade
+        const [resultado] = await db.query(`
+            SELECT 
+                CLIENTE.CLI_INT_ID,
+                CLIENTE.CLI_STR_NOME,
+                CLIENTE.CLI_STR_EMAIL,
+                CLIENTE.END_INT_ID, -- Certifique-se de incluir o ID do endereço
+                ENDERECO.END_STR_LOGRADOURO,
+                ENDERECO.END_STR_NUMERO,
+                ENDERECO.END_STR_COMPLEMENTO,
+                ENDERECO.END_STR_BAIRRO,
+                ENDERECO.END_STR_CEP,
+                (SELECT CID_STR_DESCRICAO FROM CIDADE WHERE CIDADE.CID_INT_ID = ENDERECO.CID_INT_ID) AS cidade,
+                (SELECT PLA_STR_NOME FROM PLANO WHERE PLA_INT_ID = ASSINATURA.PLA_INT_ID) AS plano
             FROM CLIENTE
-            LEFT JOIN ASSINATURA ON CLIENTE.CLI_INT_ID = ASSINATURA.CLI_INT_ID
             LEFT JOIN ENDERECO ON CLIENTE.END_INT_ID = ENDERECO.END_INT_ID
+            LEFT JOIN ASSINATURA ON CLIENTE.CLI_INT_ID = ASSINATURA.CLI_INT_ID
             WHERE CLIENTE.CLI_INT_ID = ?
         `, [id]);
 
-        if (!result || result.length === 0) {
+        if (resultado.length === 0) {
             return res.status(404).json({ message: 'Cliente não encontrado.' });
         }
 
-        res.json(result[0]);
+        res.status(200).json(resultado[0]);
     } catch (error) {
         console.error('Erro ao buscar cliente:', error);
-        res.status(500).json({ message: 'Erro interno do servidor.' });
+        res.status(500).json({ message: 'Erro ao buscar cliente.' });
     }
 };
 
 
-// Atualizar cliente
-exports.updateCliente = async (req, res) => {
-    const { id } = req.params;
-    const { nome, email, telefone } = req.body;
 
-    console.log('Buscando cliente com ID:', id);
+
+
+
+// Atualizar  Cliente e Endereço
+
+exports.updateClienteEEndereco = async (req, res) => {
+    const { clienteId, enderecoId } = req.params;
+    const { nome, email, telefone, endereco } = req.body;
 
     try {
-        const [result] = await db.query('CALL SP_UPDATE_CLIENTE(?, ?, ?, ?)', [id, nome, email, telefone]);
+        // Atualiza os dados do cliente
+        await db.query('CALL SP_UPDATE_CLIENTE(?, ?, ?, ?)', [clienteId, nome, email, telefone]);
 
-        if (result.affectedRows === 0) {
-            console.warn('Cliente não encontrado:', id);
-            return res.status(404).json({ message: 'Cliente não encontrado.' });
-        }
+        // Atualiza os dados do endereço
+        const { logradouro, numero, complemento, bairro, cep, cidadeId } = endereco;
+        await db.query('CALL SP_UPDATE_ENDERECO(?, ?, ?, ?, ?, ?, ?)', [
+            enderecoId, logradouro, numero, complemento, bairro, cep, cidadeId,
+        ]);
 
-        res.status(200).json({ message: 'Cliente atualizado com sucesso.' });
-    } catch (err) {
-        console.error('Erro ao atualizar cliente:', err);
-        res.status(500).json({ message: 'Erro ao atualizar cliente.' });
+        res.status(200).json({ message: 'Dados atualizados com sucesso!' });
+    } catch (error) {
+        console.error('Erro ao atualizar cliente e endereço:', error);
+        res.status(500).json({ message: 'Erro ao atualizar os dados.' });
     }
 };
+
+
 // Excluir cliente
 exports.deleteCliente = async (req, res) => {
     const { id } = req.params;
@@ -188,20 +195,9 @@ exports.deleteCliente = async (req, res) => {
     }
 };
 
-exports.updateEndereco = async (req, res) => {
-    const { enderecoId, logradouro, numero, complemento, bairro, cep, cidadeId } = req.body;
 
-    try {
-        await db.query(
-            'CALL SP_UPDATE_ENDERECO(?, ?, ?, ?, ?, ?, ?)',
-            [enderecoId, logradouro, numero, complemento, bairro, cep, cidadeId]
-        );
-        res.status(200).json({ message: 'Endereço atualizado com sucesso!' });
-    } catch (error) {
-        console.error('Erro ao atualizar endereço:', error);
-        res.status(500).json({ message: 'Erro ao atualizar endereço.' });
-    }
-};
+
+
 
 exports.updateAssinatura = async (req, res) => {
     const { assinaturaId, status, dataFim } = req.body;

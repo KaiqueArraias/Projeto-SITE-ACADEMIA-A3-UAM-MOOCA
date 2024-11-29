@@ -12,10 +12,10 @@
 
 <body>
     <img src="img/logo_ka.PNG" alt="Logo" class="logo" onclick="window.location.href='index.html'" />
-    
+
     <h1>Bem-vindo(a) <br> <span id="nomeClienteHeader"></span></h1>
 
-    
+
     <div id="infoCliente">
         <h2>Informações Pessoais</h2>
         <p><strong>Nome:</strong> <span id="nomeClienteP"></span></p>
@@ -34,5 +34,71 @@
 
         <button id="editarInfo">Editar Informações</button>
     </div>
-<script src="js/clientePagina.js"></script>
+
+    <div id="modalEditar" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Editar Informações</h2>
+            <form id="formEditar">
+                <label for="nome">Nome:</label>
+                <input type="text" id="editarNome" placeholder="Novo Nome" required><br>
+
+                <label for="email">Email:</label>
+                <input type="email" id="editarEmail" placeholder="Novo Email" required><br>
+
+                <label for="numero">Telefone</label>
+                <input type="text" id="editarTelefone" name="numero" required><br>
+
+                <label for="logradouro">Logradouro:</label>
+                <input type="text" id="editarLogradouro" placeholder="Novo Logradouro" required><br>
+
+                <label for="numero">Número:</label>
+                <input type="text" id="editarNumero" placeholder="Novo Número" required><br>
+
+                <label for="complemento">Complemento:</label>
+                <input type="text" id="editarComplemento" placeholder="Novo Complemento" required><br>
+
+                <label for="bairro">Bairro:</label>
+                <input type="text" id="editarBairro" placeholder="Novo Bairro" required><br>
+
+                <label for="cep">CEP:</label>
+                <input type="text" id="editarCEP" placeholder="Novo CEP" required><br><br>
+
+                <label for="editarCidade">Cidade:</label>
+                <select id="editarCidade">
+                    <option value="1">Rio Branco</option>
+                    <option value="2">Maceió</option>
+                    <option value="3">Macapá</option>
+                    <option value="4">Manaus</option>
+                    <option value="5">Salvador</option>
+                    <option value="6">Fortaleza</option>
+                    <option value="7">Brasília</option>
+                    <option value="8">Vitória</option>
+                    <option value="9">Goiânia</option>
+                    <option value="10">São Luís</option>
+                    <option value="11">Cuiabá</option>
+                    <option value="12">Campo Grande</option>
+                    <option value="13">Belo Horizonte</option>
+                    <option value="14">Belém</option>
+                    <option value="15">João Pessoa</option>
+                    <option value="16">Curitiba</option>
+                    <option value="17">Recife</option>
+                    <option value="18">Teresina</option>
+                    <option value="19">Rio de Janeiro</option>
+                    <option value="20">Natal</option>
+                    <option value="21">Porto Alegre</option>
+                    <option value="22">Porto Velho</option>
+                    <option value="23">Boa Vista</option>
+                    <option value="24">Florianópolis</option>
+                    <option value="25">São Paulo</option>
+                    <option value="26">Aracaju</option>
+                    <option value="27">Palmas</option>
+                </select>
+
+
+                <button type="button" id="saveButton">Salvar Alterações</button>
+            </form>
+        </div>
+    </div>
+    <script src="js/clientePagina.js"></script>
 </body>

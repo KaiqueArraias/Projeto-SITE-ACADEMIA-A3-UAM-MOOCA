@@ -23,13 +23,11 @@ router.get('/info/:id', authMiddleware, clienteController.getClienteById);
 router.get('/', clienteController.getClientes);
 
 // Atualizar cliente
-router.put('/:id', authMiddleware, clienteController.updateCliente);
+router.put('/:clienteId/endereco/:enderecoId', authMiddleware, clienteController.updateClienteEEndereco);
+
 
 // Excluir cliente
 router.delete('/:id', authMiddleware, clienteController.deleteCliente);
-
-// Atualizar endereço
-router.put('/endereco/:id', authMiddleware, clienteController.updateEndereco);
 
 // Atualizar assinatura
 router.put('/cliente/assinatura/:id', authMiddleware, clienteController.updateAssinatura);
