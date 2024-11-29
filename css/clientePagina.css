@@ -26,6 +26,10 @@ body {
     transform: scale(1.1);
 }
 
+h1{
+    text-align: center;
+}
+
 /* Estilo do card */
 #infoCliente {
     background-color: #1c1f26;
